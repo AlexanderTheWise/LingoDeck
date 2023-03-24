@@ -14,6 +14,7 @@ module.exports = {
           "interface",
         ],
         "@typescript-eslint/naming-convention": "off",
+        "@typescript-eslint/consistent-type-assertions": "off",
       },
     },
   ],
