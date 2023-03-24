@@ -24,3 +24,33 @@ describe("An endpointNotFound middleware", () => {
     expect(statusCode).toBe(404);
   });
 });
+
+describe("Given an errorHandler middleware", () => {
+  describe("When it receives an invalid request error", () => {
+    const invalidRequest = new CustomError(
+      "Invalid request",
+      400,
+      "Sorry, your request was invalid"
+    );
+
+    test("Then it should respond with status 400 and message 'Sorry, your request was invalid'", () => {
+      errorHandler(invalidRequest, request, response, next);
+
+      expect(response.status).toHaveBeenCalledWith(400);
+      expect(response.json).toHaveBeenCalledWith({
+        message: "Sorry, your request was invalid",
+      });
+    });
+  });
+
+  describe("When it doesn't receive any error", () => {
+    test("Then it should respond with status 500 and message 'Something went wrong'", () => {
+      errorHandler({} as CustomError, request, response, next);
+
+      expect(response.status).toHaveBeenCalledWith(500);
+      expect(response.json).toHaveBeenCalledWith({
+        message: "Something went wrong",
+      });
+    });
+  });
+});
