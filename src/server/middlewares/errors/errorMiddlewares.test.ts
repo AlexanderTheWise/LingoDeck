@@ -1,7 +1,15 @@
 import { type Request, type Response } from "express";
 import CustomError from "../../../CustomError/CustomError";
-import { endpointNotFound, errorHandler } from "./errorMiddlewares";
-import { mockNext, mockResponse } from "../../../mocks/express.mock";
+import {
+  endpointNotFound,
+  errorHandler,
+  validationError,
+} from "./errorMiddlewares";
+import {
+  mockNext,
+  mockResponse,
+  mockValidationError,
+} from "../../../mocks/express.mock";
 
 beforeEach(() => {
   mockNext.mockClear();
@@ -25,14 +33,39 @@ describe("An endpointNotFound middleware", () => {
   });
 });
 
+const invalidRequest = new CustomError(
+  "Invalid request",
+  400,
+  "Sorry, your request was invalid"
+);
+
+describe("Given a validationError middleware", () => {
+  describe("When it receives a validation error", () => {
+    test("Then it should call next with a validationError with status 400 and public message 'Validation has failed'", () => {
+      validationError(mockValidationError, request, response, next);
+      const { statusCode, publicMessage } = next.mock
+        .calls[0][0] as CustomError;
+
+      expect(statusCode).toBe(400);
+      expect(publicMessage).toBe("Validation has failed");
+    });
+  });
+
+  describe("When it receives a invalid request error", () => {
+    test("Then it should call next with that invalid request error", () => {
+      validationError(invalidRequest, request, response, next);
+      const { publicMessage, statusCode, message } = next.mock
+        .calls[0][0] as CustomError;
+
+      expect(publicMessage).toBe("Sorry, your request was invalid");
+      expect(statusCode).toBe(400);
+      expect(message).toBe("Invalid request");
+    });
+  });
+});
+
 describe("Given an errorHandler middleware", () => {
   describe("When it receives an invalid request error", () => {
-    const invalidRequest = new CustomError(
-      "Invalid request",
-      400,
-      "Sorry, your request was invalid"
-    );
-
     test("Then it should respond with status 400 and message 'Sorry, your request was invalid'", () => {
       errorHandler(invalidRequest, request, response, next);
 

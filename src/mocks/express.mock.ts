@@ -1,3 +1,4 @@
+import { ValidationError } from "express-validation";
 import { type Response } from "express";
 
 export const mockResponse: Partial<Response> = {
@@ -6,3 +7,27 @@ export const mockResponse: Partial<Response> = {
 };
 
 export const mockNext = jest.fn();
+
+export const mockValidationError = new ValidationError(
+  {
+    body: [
+      {
+        name: "ValidationError",
+        isJoi: true,
+        annotate(stripColors) {
+          return "";
+        },
+        _original: "",
+        message: "",
+        details: [
+          {
+            message: "",
+            path: [""],
+            type: "",
+          },
+        ],
+      },
+    ],
+  },
+  {}
+);

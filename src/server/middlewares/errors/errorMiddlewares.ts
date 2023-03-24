@@ -1,4 +1,5 @@
 import { type NextFunction, type Response, type Request } from "express";
+import { ValidationError } from "express-validation";
 import createDebug from "debug";
 import CustomError from "../../../CustomError/CustomError";
 
@@ -16,6 +17,29 @@ export const endpointNotFound = (
   );
 
   next(endpointNotFoundError);
+};
+
+export const validationError = (
+  error: CustomError | ValidationError,
+  request: Request,
+  response: Response,
+  next: NextFunction
+) => {
+  if (error instanceof ValidationError) {
+    const validationErrorMessage = error.details
+      .body!.map((error) => error.message)
+      .join(" && ");
+
+    const validationError = new CustomError(
+      validationErrorMessage,
+      400,
+      "Validation has failed"
+    );
+
+    next(validationError);
+  }
+
+  next(error);
 };
 
 export const errorHandler = (
