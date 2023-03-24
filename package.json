@@ -15,6 +15,8 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/debug": "^4.1.7",
+    "@types/express": "^4.17.17",
     "@types/jest": "^29.5.0",
     "@typescript-eslint/eslint-plugin": "^5.56.0",
     "@typescript-eslint/parser": "^5.56.0",
@@ -29,6 +31,9 @@
     "ts-jest": "^29.0.5"
   },
   "dependencies": {
+    "debug": "^4.3.4",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
     "typescript": "^4.3.5"
   }
 }
