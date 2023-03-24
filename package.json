@@ -8,8 +8,8 @@
     "build": "tsc",
     "build:dev": "tsc --watch",
     "start": "node dist/index.js",
-    "test": "jest --passWithNoTests",
-    "test:coverage": "jest --coverage --watchAll=false --passWithNoTests"
+    "test": "jest",
+    "test:coverage": "jest --coverage --watchAll=false"
   },
   "keywords": [],
   "author": "",
@@ -26,7 +26,9 @@
     "jest-ts-webcompat-resolver": "^1.0.0",
     "lint-staged": "^13.2.0",
     "prettier": "^2.8.7",
-    "ts-jest": "^29.0.5",
-    "typescript": "^5.0.2"
+    "ts-jest": "^29.0.5"
+  },
+  "dependencies": {
+    "typescript": "^4.3.5"
   }
 }
