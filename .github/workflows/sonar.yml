@@ -16,6 +16,8 @@ jobs:
       - name: Node Modules
         run: npm ci
       - name: Coverage
+        env:
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
         run: npm run test:coverage
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
