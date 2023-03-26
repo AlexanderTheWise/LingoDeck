@@ -8,35 +8,29 @@ import { type ResponseMessage, type UserCredentials } from "../../types.js";
 import app from "../../app.js";
 
 let server: MongoMemoryServer;
+const user: UserCredentials = {
+  username: "TechNerd",
+  password: "usuario1",
+};
+const correctUser = { ...user };
 
 beforeAll(async () => {
   server = await MongoMemoryServer.create();
   await connectDatabase(server.getUri());
+  await User.create({
+    ...user,
+    password: await bcrypt.hash(user.password, 10),
+  });
 });
 
 afterAll(async () => {
+  await User.deleteMany();
   await mongoose.connection.close();
   await server.stop();
 });
 
-afterEach(async () => {
-  jest.clearAllMocks();
-});
-
 describe("Given a POST '/user/login' endpoint", () => {
   const login = "/user/login";
-  const user: UserCredentials = {
-    username: "TechNerd",
-    password: "usuario1",
-  };
-  const correctUser = { ...user };
-
-  beforeAll(async () => {
-    await User.create({
-      ...user,
-      password: await bcrypt.hash(user.password, 10),
-    });
-  });
 
   describe("When it receives a request with username 'TechNerd' and password 'usuario1'", () => {
     test("Then it should respond with a token", async () => {
@@ -97,6 +91,36 @@ describe("Given a POST '/user/login' endpoint", () => {
       const response = await request(app).post(login).send(user).expect(400);
 
       expect(response.body).toStrictEqual(validationHasFailed);
+    });
+  });
+});
+
+describe("Given a POST '/user/register' endpoint", () => {
+  const register = "/user/register";
+
+  describe("When it receives a request with username 'ArtEnthusiast' and password 'usuario2'", () => {
+    test("Then it should respond with message 'User ArtEnthusiast has been succesfully created'", async () => {
+      user.username = "ArtEnthusiast";
+      user.password = "usuario2";
+
+      const response = await request(app).post(register).send(user).expect(201);
+
+      expect(response.body).toStrictEqual({
+        message: "User ArtEnthusiast has been succesfully created",
+      });
+    });
+  });
+
+  describe("When it receives a request with username 'Technerd' and password 'usuario1'", () => {
+    test("Then it should respond with message 'Couldn't create the user'", async () => {
+      const response = await request(app)
+        .post(register)
+        .send(correctUser)
+        .expect(500);
+
+      expect(response.body).toStrictEqual({
+        message: "Couldn't create the user",
+      });
     });
   });
 });
