@@ -45,3 +45,38 @@ export const loginUser = async (
     next(wrongCredentials);
   }
 };
+
+export const registerUser = async (
+  request: Request<
+    Record<string, unknown>,
+    Record<string, unknown>,
+    UserCredentials
+  >,
+  response: Response,
+  next: NextFunction
+) => {
+  try {
+    const { username, password } = request.body;
+
+    if (await User.findOne({ username }).exec()) {
+      throw new Error("Username already exists");
+    }
+
+    const user = await User.create({
+      username,
+      password: await bcrypt.hash(password, 10),
+    });
+
+    response.status(201).json({
+      message: `User ${user.username} has been succesfully created`,
+    });
+  } catch (error) {
+    const registerError = new CustomError(
+      (error as Error).message,
+      0,
+      "Couldn't create the user"
+    );
+
+    next(registerError);
+  }
+};
