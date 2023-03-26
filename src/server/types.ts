@@ -9,6 +9,10 @@ export interface LoginUserPayload extends Pick<UserCredentials, "username"> {
   id: string;
 }
 
+export interface ResponseMessage {
+  message: string;
+}
+
 export type TestRequest<T> = Request<
   Record<string, unknown>,
   Record<string, unknown>,
