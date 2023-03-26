@@ -1,15 +1,15 @@
 import { type Request, type Response } from "express";
-import CustomError from "../../../CustomError/CustomError";
+import CustomError from "../../../CustomError/CustomError.js";
 import {
   endpointNotFound,
   errorHandler,
   validationError,
-} from "./errorMiddlewares";
+} from "./errorMiddlewares.js";
 import {
   mockNext,
   mockResponse,
   mockValidationError,
-} from "../../../mocks/express.mock";
+} from "../../../mocks/express.mock.js";
 
 beforeEach(() => {
   mockNext.mockClear();

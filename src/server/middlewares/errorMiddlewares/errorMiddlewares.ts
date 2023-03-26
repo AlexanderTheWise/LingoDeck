@@ -1,7 +1,7 @@
 import { type NextFunction, type Response, type Request } from "express";
 import { ValidationError } from "express-validation";
 import createDebug from "debug";
-import CustomError from "../../../CustomError/CustomError";
+import CustomError from "../../../CustomError/CustomError.js";
 
 const debug = createDebug("lingodeck:errorsMiddlewares");
 

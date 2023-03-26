@@ -1,10 +1,10 @@
 import bcrypt from "bcryptjs";
 import { type Response } from "express";
-import User from "../../../database/models/User";
-import { loginUser } from "./usersControllers";
-import { mockResponse, mockNext } from "../../../mocks/express.mock";
-import { type TestRequest, type UserCredentials } from "../../types";
-import type CustomError from "../../../CustomError/CustomError";
+import User from "../../../database/models/User.js";
+import { loginUser } from "./usersControllers.js";
+import { mockResponse, mockNext } from "../../../mocks/express.mock.js";
+import { type TestRequest, type UserCredentials } from "../../types.js";
+import type CustomError from "../../../CustomError/CustomError.js";
 
 const request = {
   body: {
