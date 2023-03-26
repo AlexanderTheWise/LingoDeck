@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import { type Response } from "express";
 import User from "../../../database/models/User.js";
-import { loginUser } from "./usersControllers.js";
+import { loginUser, registerUser } from "./usersControllers.js";
 import { mockResponse, mockNext } from "../../../mocks/express.mock.js";
 import { type TestRequest, type UserCredentials } from "../../types.js";
 import type CustomError from "../../../CustomError/CustomError.js";
@@ -75,6 +75,38 @@ describe("Given a loginUser controller", () => {
       expect(message).toBe("Password doesn't match indicated");
       expect(publicMessage).toBe(commonErrorMessage);
       expect(statusCode).toBe(commonErrorStatus);
+    });
+  });
+});
+
+describe("Given a registerUser controller", () => {
+  describe("When the given username already exists in the database", () => {
+    test("Then it should call next with register error", async () => {
+      User.findOne = jest.fn().mockImplementation(() => ({
+        exec: jest.fn().mockResolvedValue(true),
+      }));
+
+      await registerUser(request, response, next);
+      const { message, publicMessage } = next.mock.calls[0][0] as CustomError;
+
+      expect(message).toBe("Username already exists");
+      expect(publicMessage).toBe("Couldn't create the user");
+    });
+  });
+
+  describe("When the given username doesn't exists in the database", () => {
+    test("Then it should respond with status 201 and message 'User @exampleUsername has been succesfully created'", async () => {
+      User.findOne = jest.fn().mockImplementation(() => ({
+        exec: jest.fn().mockResolvedValue(null),
+      }));
+      User.create = jest.fn().mockResolvedValue(request.body);
+
+      await registerUser(request, response, next);
+
+      expect(response.status).toHaveBeenCalledWith(201);
+      expect(response.json).toHaveBeenCalledWith({
+        message: "User @exampleUsername has been succesfully created",
+      });
     });
   });
 });
