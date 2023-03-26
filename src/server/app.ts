@@ -4,7 +4,7 @@ import {
   endpointNotFound,
   errorHandler,
   validationError,
-} from "./middlewares/errorMiddlewares/errorMiddlewares.js";
+} from "./middlewares/errors/errorMiddlewares.js";
 import usersRouter from "./routers/users/usersRouter.js";
 
 const app = express();

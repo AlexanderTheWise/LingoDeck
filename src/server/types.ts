@@ -18,3 +18,7 @@ export type TestRequest<T> = Request<
   Record<string, unknown>,
   T
 >;
+
+export interface CustomRequest extends Request {
+  userId: string;
+}
