@@ -1,9 +1,10 @@
 import { type Response, type NextFunction } from "express";
 import sharp from "sharp";
 import { join, parse } from "path";
-import { unlink } from "fs/promises";
+import { unlink, readFile } from "fs/promises";
 import { type CustomRequest } from "../../types";
 import CustomError from "../../../CustomError/CustomError";
+import bucket from "./supabase";
 
 export const format = async (
   request: CustomRequest,
@@ -33,5 +34,32 @@ export const format = async (
     );
 
     next(formatError);
+  }
+};
+
+export const backup = async (
+  request: CustomRequest,
+  response: Response,
+  next: NextFunction
+) => {
+  try {
+    const { destination, convertedName } = request.file;
+    const imageBuffer = await readFile(join(destination, convertedName));
+    await bucket.upload(convertedName, imageBuffer);
+
+    const {
+      data: { publicUrl },
+    } = bucket.getPublicUrl(convertedName);
+
+    request.file.backupUrl = publicUrl;
+    next();
+  } catch (error) {
+    const backupError = new CustomError(
+      (error as Error).message,
+      0,
+      "Couldn't create an image backup"
+    );
+
+    next(backupError);
   }
 };
