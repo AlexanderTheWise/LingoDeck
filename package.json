@@ -37,6 +37,7 @@
     "ts-jest": "^29.0.5"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.12.1",
     "bcryptjs": "^2.4.3",
     "debug": "^4.3.4",
     "dotenv": "^16.0.3",
