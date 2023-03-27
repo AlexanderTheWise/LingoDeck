@@ -18,7 +18,11 @@ export type TestRequest<T> = Request<
   Record<string, unknown>,
   T
 >;
-
+export interface CustomFile extends Express.Multer.File {
+  convertedName: string;
+  backupUrl: string;
+}
 export interface CustomRequest extends Request {
   userId: string;
+  file: CustomFile;
 }
