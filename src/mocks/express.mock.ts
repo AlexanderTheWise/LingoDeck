@@ -1,11 +1,11 @@
 import { ValidationError } from "express-validation";
 import { type Response } from "express";
+import { type CustomRequest, type CustomFile } from "../server/types";
 
 export const mockResponse: Partial<Response> = {
   status: jest.fn().mockReturnThis(),
   json: jest.fn(),
 };
-
 export const mockNext = jest.fn();
 
 export const mockValidationError = new ValidationError(
@@ -31,3 +31,8 @@ export const mockValidationError = new ValidationError(
   },
   {}
 );
+
+export const file: Partial<CustomFile> = {
+  convertedName: "exampleImage.jpg",
+  destination: "uploads",
+};
