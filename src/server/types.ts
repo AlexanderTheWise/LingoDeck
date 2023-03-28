@@ -1,4 +1,5 @@
 import { type Request } from "express";
+import { type FlashcardModel } from "../database/types";
 
 export interface UserCredentials {
   username: string;
@@ -22,7 +23,13 @@ export interface CustomFile extends Express.Multer.File {
   convertedName: string;
   backupUrl: string;
 }
+
+export type RequestFlashcard = Pick<
+  FlashcardModel,
+  "back" | "front" | "language"
+>;
 export interface CustomRequest extends Request {
   userId: string;
   file: CustomFile;
+  body: RequestFlashcard;
 }
