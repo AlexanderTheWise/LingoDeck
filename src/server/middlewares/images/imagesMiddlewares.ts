@@ -2,9 +2,9 @@ import { type Response, type NextFunction } from "express";
 import sharp from "sharp";
 import { join, parse } from "path";
 import { unlink, readFile } from "fs/promises";
-import { type CustomRequest } from "../../types";
-import CustomError from "../../../CustomError/CustomError";
-import bucket from "./supabase";
+import { type CustomRequest } from "../../types.js";
+import CustomError from "../../../CustomError/CustomError.js";
+import bucket from "./supabase.js";
 
 export const format = async (
   request: CustomRequest,

@@ -1,10 +1,15 @@
-import fs from "fs/promises";
 import { type Response } from "express";
 import { mockNext, mockResponse, file } from "../../../mocks/express.mock";
 import { type CustomRequest } from "../../types";
 import { backup, format } from "./imagesMiddlewares";
 import type CustomError from "../../../CustomError/CustomError";
 import bucket from "./supabase";
+import {
+  mockResize,
+  mockToFormat,
+  readfileSpy,
+  unlinkSpy,
+} from "../../../mocks/modulesUtils.mocks";
 
 const request = {
   file,
@@ -12,16 +17,11 @@ const request = {
 const response = mockResponse as Response;
 const next = mockNext;
 
-const mockResize = jest.fn().mockReturnThis();
-const mockToFormat = jest.fn().mockReturnThis();
-
 jest.mock("sharp", () => () => ({
   resize: mockResize,
   toFormat: mockToFormat,
   toFile: jest.fn(),
 }));
-const unlinkSpy = jest.spyOn(fs, "unlink");
-const readfileSpy = jest.spyOn(fs, "readFile");
 
 afterEach(() => {
   next.mockClear();

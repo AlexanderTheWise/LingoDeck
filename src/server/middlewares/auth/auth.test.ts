@@ -40,7 +40,7 @@ describe("Given an auth middleware", () => {
 
       expect(message).toBe("Authorization header is missing");
       expect(statusCode).toBe(commonStatusCode);
-      expect(publicMessage).toBe(publicMessage);
+      expect(publicMessage).toBe(commonPublicMessage);
     });
   });
 
