@@ -5,6 +5,7 @@ import {
   errorHandler,
   validationError,
 } from "./middlewares/errors/errorMiddlewares.js";
+import flashcardsRouter from "./routers/flashcards/flashcardsRouter.js";
 import usersRouter from "./routers/users/usersRouter.js";
 
 const app = express();
@@ -14,6 +15,7 @@ app.use(morgan("dev"));
 app.use(express.json());
 
 app.use("/user", usersRouter);
+app.use("/flashcards", flashcardsRouter);
 app.use(validationError);
 app.use(endpointNotFound);
 app.use(errorHandler);
