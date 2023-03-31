@@ -32,4 +32,7 @@ export interface CustomRequest extends Request {
   userId: string;
   file: CustomFile;
   body: RequestFlashcard;
+  params: {
+    flashcardId: string;
+  };
 }

@@ -5,6 +5,7 @@ import { unlink, readFile } from "fs/promises";
 import { type CustomRequest } from "../../types.js";
 import CustomError from "../../../CustomError/CustomError.js";
 import bucket from "./supabase.js";
+import Flashcard from "../../../database/models/Flashcards.js";
 
 export const format = async (
   request: CustomRequest,
@@ -61,5 +62,33 @@ export const backup = async (
     );
 
     next(backupError);
+  }
+};
+
+export const deleteImage = async (
+  request: CustomRequest,
+  response: Response,
+  next: NextFunction
+) => {
+  try {
+    const {
+      params: { flashcardId },
+      file: { destination },
+    } = request;
+    const flashcard = await Flashcard.findById(flashcardId).exec();
+    const filename = flashcard!.imageInfo.fileName;
+
+    await unlink(join(destination, filename));
+    await bucket.remove([filename]);
+
+    next();
+  } catch (error) {
+    const deleteImageError = new CustomError(
+      (error as Error).message,
+      0,
+      "Couldn't delete the current image"
+    );
+
+    next(deleteImageError);
   }
 };
