@@ -1,6 +1,6 @@
 import { ValidationError } from "express-validation";
 import { type Response } from "express";
-import { type CustomRequest, type CustomFile } from "../server/types";
+import { type CustomFile } from "../server/types";
 
 export const mockResponse: Partial<Response> = {
   status: jest.fn().mockReturnThis(),
