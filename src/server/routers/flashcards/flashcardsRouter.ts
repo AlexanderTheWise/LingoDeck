@@ -1,3 +1,4 @@
+import crypto from "crypto";
 import { Router } from "express";
 import { validate } from "express-validation";
 import multer, { diskStorage } from "multer";
@@ -25,6 +26,9 @@ const upload = multer({
   fileFilter(req, file, callback) {
     const { error } = cardFields.body.validate(req.body);
     callback(null, !error);
+  },
+  limits: {
+    fileSize: 10000,
   },
 });
 

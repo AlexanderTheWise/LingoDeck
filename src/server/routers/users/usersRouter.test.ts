@@ -1,32 +1,24 @@
 import bcrypt from "bcryptjs";
 import request from "supertest";
-import { MongoMemoryServer } from "mongodb-memory-server";
-import mongoose from "mongoose";
-import connectDatabase from "../../../database/connectDatabase.js";
 import User from "../../../database/models/User.js";
 import { type ResponseMessage, type UserCredentials } from "../../types.js";
 import app from "../../app.js";
+import { Types } from "mongoose";
 
-let server: MongoMemoryServer;
 const user: UserCredentials = {
   username: "TechNerd",
   password: "usuario1",
 };
 const correctUser = { ...user };
+const userId = "6409d298f5c4e943969fc56f";
 
 beforeAll(async () => {
-  server = await MongoMemoryServer.create();
-  await connectDatabase(server.getUri());
-  await User.create({
-    ...user,
-    password: await bcrypt.hash(user.password, 10),
-  });
-});
-
-afterAll(async () => {
-  await User.deleteMany();
-  await mongoose.connection.close();
-  await server.stop();
+  (
+    await User.create({
+      username: "TechNerd",
+      password: await bcrypt.hash("usuario1", 10),
+    })
+  )._id = new Types.ObjectId(userId);
 });
 
 describe("Given a POST '/user/login' endpoint", () => {
