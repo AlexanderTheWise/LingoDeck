@@ -15,19 +15,23 @@ import bucket from "../../middlewares/images/supabase";
 import { type FlashcardModel } from "../../../database/types";
 import { Types } from "mongoose";
 import User from "../../../database/models/User";
+import Flashcard from "../../../database/models/Flashcards";
 
 const userId = "6409d298f5c4e943969fc57f";
 beforeAll(async () => {
-  (
-    await User.create({
-      username: "AwesomeMagician",
-      password: await bcrypt.hash("usuario1", 10),
-    })
-  )._id = new Types.ObjectId(userId);
+  const user = new User({
+    username: "AwesomeMagician",
+    password: await bcrypt.hash("usuario1", 10),
+  });
+  user._id = new Types.ObjectId(userId);
+  await user.save();
+});
 
+beforeEach(() => {
   mock(
     {
       "path/to/image.png": Buffer.from([0xff, 0xd8, 0xff]),
+      "path/to/goodbye.png": Buffer.from([0xff, 0xd8, 0xff]),
       uploads: {},
     },
     {}
@@ -53,19 +57,19 @@ jwt.verify = jest.fn().mockReturnValue({
 });
 crypto.randomUUID = jest.fn().mockReturnValue("12345678");
 
+bucket.upload = jest.fn().mockResolvedValue(true);
+bucket.getPublicUrl = jest.fn().mockImplementation((filename: string) => ({
+  data: {
+    publicUrl: `http://supabaseExample.co/${filename}`,
+  },
+}));
+
 describe("Given POST /flashcards endpoint", () => {
   const { front, back, language, efactor, repetition } = mockFlashcards[0];
   const create = "/flashcards";
 
   describe("When it receives a request with a flashcard and authorization 'Bearer RISERO?rYsLDYo-6?3RMUSsizfbEqj0/?Q!cFZfo'", () => {
     test("Then it should respond with the flashcard, interval 0, efactor 2.5, repetition 0", async () => {
-      bucket.upload = jest.fn().mockResolvedValue(true);
-      bucket.getPublicUrl = jest.fn().mockReturnValue({
-        data: {
-          publicUrl: "http://supabaseExample.co/image12345678.webp",
-        },
-      });
-
       const response = await request(app)
         .post(create)
         .set("Content-Type", "multipart/form-data")
@@ -115,6 +119,71 @@ describe("Given POST /flashcards endpoint", () => {
 
       expect(response.body).toStrictEqual({
         message: authPublicMessage,
+      });
+    });
+  });
+});
+
+describe("Given a PATCH '/flashcards/:flashcardId' endpoint", () => {
+  const modify = `/flashcards/${mockFlashcards[2].id!}`;
+
+  beforeEach(async () => {
+    const { id, ...clone } = mockFlashcards[2];
+    const flashcard = new Flashcard({
+      ...clone,
+      dueDate: "2023-04-01T21:17:42+0000",
+    });
+    flashcard._id = new Types.ObjectId(id);
+    await flashcard.save();
+  });
+
+  afterEach(async () => {
+    await Flashcard.findByIdAndDelete(mockFlashcards[2].id).exec();
+  });
+
+  describe("When it receives a request with flashcardId '6422f13254bee8bb0b6151ba' and the same flashcard info (front and back)", () => {
+    test("Then it should return the updated flashcard without modifying efactor, repetition and interval", async () => {
+      const { front, back, language } = mockFlashcards[2];
+      bucket.remove = jest.fn().mockResolvedValue("");
+
+      const response = await request(app)
+        .patch(modify)
+        .set("Content-Type", "multipart/form-data")
+        .set("Authorization", authorizationHeader)
+        .field("front", front)
+        .field("back", back)
+        .field("language", language)
+        .attach("image", "path/to/image.png", { contentType: "image/png" });
+
+      expect(response.body).toStrictEqual({
+        flashcard: expect.objectContaining({
+          ...mockFlashcards[2],
+          dueDate: "2023-04-01T21:17:42+0000",
+        }) as FlashcardModel,
+      });
+    });
+  });
+
+  describe("When it receives a request with flashcardId '6422f13254bee8bb0b6151ba' and different flashcard info (front and back)", () => {
+    test("Then it should return the updated flashcard reseting efactor, repetition and interval to initial values", async () => {
+      const { front, back, language } = mockFlashcards[1];
+
+      const response = await request(app)
+        .patch(modify)
+        .set("Content-Type", "multipart/form-data")
+        .set("Authorization", authorizationHeader)
+        .field("front", front)
+        .field("back", back)
+        .field("language", language)
+        .attach("image", "path/to/goodbye.png", { contentType: "image/png" });
+
+      expect(response.body).toStrictEqual({
+        flashcard: expect.objectContaining({
+          id: "6422f13254bee8bb0b6151ba",
+          efactor: 2.5,
+          repetition: 0,
+          interval: 0,
+        }) as FlashcardModel,
       });
     });
   });
