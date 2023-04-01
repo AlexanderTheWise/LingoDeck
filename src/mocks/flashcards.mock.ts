@@ -1,7 +1,7 @@
 import { type FlashcardModel } from "../database/types";
 
 interface MockFlashcard extends Omit<FlashcardModel, "dueDate"> {
-  id: string;
+  id?: string;
 }
 
 const mockFlashcards: MockFlashcard[] = [
@@ -23,8 +23,8 @@ const mockFlashcards: MockFlashcard[] = [
     front: "Goodbye",
     back: "Adiós",
     imageInfo: {
-      fileName: "goodbye.webp",
-      imageBackup: "https://example.com/images/goodbye.webp",
+      fileName: "goodbye12345678.webp",
+      imageBackup: "http://supabaseExample.co/goodbye12345678.webp",
     },
     language: "English",
     efactor: 2.5,
@@ -36,12 +36,12 @@ const mockFlashcards: MockFlashcard[] = [
     front: "Cat",
     back: "Gato",
     imageInfo: {
-      fileName: "cat.webp",
-      imageBackup: "https://example.com/images/cat.webp",
+      fileName: "image12345678.webp",
+      imageBackup: "http://supabaseExample.co/image12345678.webp",
     },
     language: "English",
-    efactor: 2.5,
-    interval: 1,
+    efactor: 4,
+    interval: 3,
     repetition: 0,
   },
 ];

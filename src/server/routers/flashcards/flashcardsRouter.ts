@@ -3,9 +3,16 @@ import { Router } from "express";
 import { validate } from "express-validation";
 import multer, { diskStorage } from "multer";
 import { parse } from "path";
-import { createFlashcard } from "../../controllers/flashcards/flashcardsControllers.js";
+import {
+  createFlashcard,
+  modifyFlashcard,
+} from "../../controllers/flashcards/flashcardsControllers.js";
 import auth from "../../middlewares/auth/auth.js";
-import { backup, format } from "../../middlewares/images/imagesMiddlewares.js";
+import {
+  backup,
+  deleteImage,
+  format,
+} from "../../middlewares/images/imagesMiddlewares.js";
 import cardFields from "../../schemas/cardFields.js";
 import { type CustomFile } from "../../types.js";
 
@@ -42,6 +49,17 @@ flashcardsRouter.post(
   format,
   backup,
   createFlashcard
+);
+
+flashcardsRouter.patch(
+  "/:flashcardId",
+  auth,
+  upload.single("image"),
+  validate(cardFields, {}, { abortEarly: false }),
+  format,
+  backup,
+  deleteImage,
+  modifyFlashcard
 );
 
 export default flashcardsRouter;
