@@ -30,6 +30,10 @@ const flashcardSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  dueDate: {
+    type: String,
+    required: true,
+  },
 });
 
 const Flashcard = mongoose.model<FlashcardModel>(

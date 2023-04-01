@@ -14,4 +14,5 @@ export interface FlashcardModel extends SuperMemoItem {
     imageBackup: string;
   };
   language: string;
+  dueDate: string;
 }

@@ -1,6 +1,6 @@
 import { type FlashcardModel } from "../database/types";
 
-interface MockFlashcard extends FlashcardModel {
+interface MockFlashcard extends Omit<FlashcardModel, "dueDate"> {
   id: string;
 }
 
