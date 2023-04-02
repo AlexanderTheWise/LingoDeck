@@ -6,6 +6,7 @@ import User from "../../../database/models/User";
 import mockFlashcards from "../../../mocks/flashcards.mock";
 import {
   createFlashcard,
+  getFlashcard,
   modifyFlashcard,
   practiceFlashcard,
 } from "./flashcardsControllers";
@@ -201,5 +202,40 @@ describe("Given a practiceFlashcard controller", () => {
       expect(message).toBe("Invalid grade");
       expect(publicMessage).toBe("Couldn't set the next due date");
     });
+  });
+});
+
+describe("A getFlashcard controller", () => {
+  it("Should return respond with status 200 and a flashcard", async () => {
+    Flashcard.findById = jest.fn().mockImplementation(() => ({
+      exec: jest.fn().mockResolvedValue({
+        ...mockFlashcards[0],
+        dueDate: "2023-04-02T10:39:18.000Z",
+      }),
+    }));
+
+    await getFlashcard(request, response, next);
+
+    expect(response.status).toHaveBeenLastCalledWith(200);
+    expect(response.json).toHaveBeenCalledWith({
+      flashcard: {
+        ...mockFlashcards[0],
+        dueDate: "2023-04-02T10:39:18.000Z",
+      },
+    });
+  });
+
+  it("Should call next with get flashcard error if it can't find the flashcard", async () => {
+    Flashcard.findById = jest.fn().mockImplementation(() => ({
+      exec: jest.fn().mockResolvedValue(null),
+    }));
+
+    await getFlashcard(request, response, next);
+    const { message, publicMessage, statusCode } = next.mock
+      .calls[0][0] as CustomError;
+
+    expect(message).toBe("Couldn't find the requested flashcard");
+    expect(statusCode).toBe(404);
+    expect(publicMessage).toBe("The requested flashcard doesn't exist");
   });
 });

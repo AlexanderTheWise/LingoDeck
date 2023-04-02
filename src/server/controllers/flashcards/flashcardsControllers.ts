@@ -131,3 +131,30 @@ export const practiceFlashcard = async (
     next(practiceError);
   }
 };
+
+export const getFlashcard = async (
+  request: CustomRequest,
+  response: Response,
+  next: NextFunction
+) => {
+  try {
+    const {
+      params: { flashcardId },
+    } = request;
+
+    const flashcard = await Flashcard.findById(flashcardId).exec();
+    if (!flashcard) {
+      throw new Error("Couldn't find the requested flashcard");
+    }
+
+    response.status(200).json({ flashcard });
+  } catch (error) {
+    const getFlashcardError = new CustomError(
+      (error as Error).message,
+      404,
+      "The requested flashcard doesn't exist"
+    );
+
+    next(getFlashcardError);
+  }
+};
