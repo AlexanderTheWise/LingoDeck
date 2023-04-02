@@ -142,7 +142,7 @@ describe("Given a PATCH '/flashcards/:flashcardId' endpoint", () => {
   });
 
   describe("When it receives a request with flashcardId '6422f13254bee8bb0b6151ba' and the same flashcard info (front and back)", () => {
-    test("Then it should return the updated flashcard without modifying efactor, repetition and interval", async () => {
+    test("Then it should respond with status 200, the updated flashcard without modifying efactor, repetition and interval", async () => {
       const { front, back, language } = mockFlashcards[2];
       bucket.remove = jest.fn().mockResolvedValue("");
 
@@ -153,7 +153,8 @@ describe("Given a PATCH '/flashcards/:flashcardId' endpoint", () => {
         .field("front", front)
         .field("back", back)
         .field("language", language)
-        .attach("image", "path/to/image.png", { contentType: "image/png" });
+        .attach("image", "path/to/image.png", { contentType: "image/png" })
+        .expect(200);
 
       expect(response.body).toStrictEqual({
         flashcard: expect.objectContaining({
@@ -165,7 +166,7 @@ describe("Given a PATCH '/flashcards/:flashcardId' endpoint", () => {
   });
 
   describe("When it receives a request with flashcardId '6422f13254bee8bb0b6151ba' and different flashcard info (front and back)", () => {
-    test("Then it should return the updated flashcard reseting efactor, repetition and interval to initial values", async () => {
+    test("Then it should respond with status 200, the updated flashcard reseting efactor, repetition and interval to initial values", async () => {
       const { front, back, language } = mockFlashcards[1];
 
       const response = await request(app)
@@ -175,7 +176,8 @@ describe("Given a PATCH '/flashcards/:flashcardId' endpoint", () => {
         .field("front", front)
         .field("back", back)
         .field("language", language)
-        .attach("image", "path/to/goodbye.png", { contentType: "image/png" });
+        .attach("image", "path/to/goodbye.png", { contentType: "image/png" })
+        .expect(200);
 
       expect(response.body).toStrictEqual({
         flashcard: expect.objectContaining({
@@ -184,6 +186,54 @@ describe("Given a PATCH '/flashcards/:flashcardId' endpoint", () => {
           repetition: 0,
           interval: 0,
         }) as FlashcardModel,
+      });
+    });
+  });
+});
+
+describe("Given a PATCH '/flashcards/practice/:flashcardId' endpoint", () => {
+  beforeAll(async () => {
+    const { id, ...clone } = mockFlashcards[1];
+    const flashcard = new Flashcard({
+      ...clone,
+      dueDate: "2023-04-01T21:17:42+0000",
+    });
+    flashcard._id = new Types.ObjectId(id);
+    await flashcard.save();
+  });
+  const practice = `/flashcards/practice/${mockFlashcards[1].id!}`;
+
+  describe("When it receives a request with id  grade 5", () => {
+    test("Then it should respond with status 200, the flashcard and update interval 1, repetition 1, efactor 2.6", async () => {
+      mock.restore();
+
+      const response = await request(app)
+        .patch(practice)
+        .set("Authorization", authorizationHeader)
+        .send({ grade: 5 })
+        .expect(200);
+
+      expect(response.body).toStrictEqual({
+        flashcard: expect.objectContaining({
+          ...mockFlashcards[1],
+          efactor: 2.6,
+          interval: 1,
+          repetition: 1,
+        }) as FlashcardModel,
+      });
+    });
+  });
+
+  describe("When it receives a request with id '6422f129bbb45f90d5283166' and grade 6", () => {
+    test("Then it should respond with status 400 and 'Validation has failed' message", async () => {
+      const response = await request(app)
+        .patch(practice)
+        .set("Authorization", authorizationHeader)
+        .send({ grade: 6 })
+        .expect(400);
+
+      expect(response.body).toStrictEqual({
+        message: "Validation has failed",
       });
     });
   });
