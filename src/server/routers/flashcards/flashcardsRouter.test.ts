@@ -191,6 +191,13 @@ describe("Given a PATCH '/flashcards/:flashcardId' endpoint", () => {
   });
 });
 
+const practicedFlashcard = {
+  ...mockFlashcards[1],
+  efactor: 2.6,
+  interval: 1,
+  repetition: 1,
+};
+
 describe("Given a PATCH '/flashcards/practice/:flashcardId' endpoint", () => {
   beforeAll(async () => {
     const { id, ...clone } = mockFlashcards[1];
@@ -215,10 +222,7 @@ describe("Given a PATCH '/flashcards/practice/:flashcardId' endpoint", () => {
 
       expect(response.body).toStrictEqual({
         flashcard: expect.objectContaining({
-          ...mockFlashcards[1],
-          efactor: 2.6,
-          interval: 1,
-          repetition: 1,
+          ...practicedFlashcard,
         }) as FlashcardModel,
       });
     });
@@ -234,6 +238,41 @@ describe("Given a PATCH '/flashcards/practice/:flashcardId' endpoint", () => {
 
       expect(response.body).toStrictEqual({
         message: "Validation has failed",
+      });
+    });
+  });
+});
+
+describe("Given a GET '/flashcards/:flashcardId' endpoint", () => {
+  describe("When it receives a request with id '6422f11dded99925cb179372'", () => {
+    const get = `/flashcards/${practicedFlashcard.id!}`;
+
+    test("Then it should respond with a flashcard", async () => {
+      const response = await request(app)
+        .get(get)
+        .set("Authorization", authorizationHeader)
+        .expect(200);
+
+      expect(response.body).toStrictEqual({
+        flashcard: {
+          ...mockFlashcards[1],
+          dueDate: "2023-04-01T21:17:42+0000",
+        },
+      });
+    });
+  });
+
+  describe("When it receives a request with id '6429d58fa0c9ff3aa7cc95c3'", () => {
+    const get = "/flashcards/6429d58fa0c9ff3aa7cc95c3";
+
+    test("Then it should respond with message 'The requested flashcard doesn't exist'", async () => {
+      const response = await request(app)
+        .get(get)
+        .set("Authorization", authorizationHeader)
+        .expect(404);
+
+      expect(response.body).toStrictEqual({
+        message: "The requested flashcard doesn't exist",
       });
     });
   });
