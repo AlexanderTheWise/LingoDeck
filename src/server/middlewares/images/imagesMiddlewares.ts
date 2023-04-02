@@ -73,12 +73,11 @@ export const deleteImage = async (
   try {
     const {
       params: { flashcardId },
-      file: { destination },
     } = request;
     const flashcard = await Flashcard.findById(flashcardId).exec();
     const filename = flashcard!.imageInfo.fileName;
 
-    await unlink(join(destination, filename));
+    await unlink(join("uploads", filename));
     await bucket.remove([filename]);
 
     next();
