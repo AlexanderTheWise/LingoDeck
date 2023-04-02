@@ -6,6 +6,7 @@ import { parse } from "path";
 import {
   createFlashcard,
   modifyFlashcard,
+  practiceFlashcard,
 } from "../../controllers/flashcards/flashcardsControllers.js";
 import auth from "../../middlewares/auth/auth.js";
 import {
@@ -15,6 +16,7 @@ import {
 } from "../../middlewares/images/imagesMiddlewares.js";
 import cardFields from "../../schemas/cardFields.js";
 import { type CustomFile } from "../../types.js";
+import grade from "../../schemas/grade.js";
 
 const storage = diskStorage({
   destination: "uploads",
@@ -60,6 +62,13 @@ flashcardsRouter.patch(
   backup,
   deleteImage,
   modifyFlashcard
+);
+
+flashcardsRouter.patch(
+  "/practice/:flashcardId",
+  auth,
+  validate(grade, {}, { abortEarly: false }),
+  practiceFlashcard
 );
 
 export default flashcardsRouter;
