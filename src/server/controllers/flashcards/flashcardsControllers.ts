@@ -1,3 +1,4 @@
+import { supermemo } from "supermemo";
 import dayjs from "dayjs";
 import { type NextFunction, type Response } from "express";
 import CustomError from "../../../CustomError/CustomError.js";
@@ -86,5 +87,47 @@ export const modifyFlashcard = async (
     );
 
     next(modifyError);
+  }
+};
+
+export const practiceFlashcard = async (
+  request: CustomRequest,
+  response: Response,
+  next: NextFunction
+) => {
+  try {
+    const {
+      params: { flashcardId },
+      body: { grade },
+    } = request;
+
+    if (!(grade > -1 && grade < 6)) {
+      throw new Error("Invalid grade");
+    }
+
+    const flashcard = await Flashcard.findById(flashcardId).exec();
+    const supermemoItem = supermemo(
+      {
+        efactor: flashcard!.efactor,
+        interval: flashcard!.interval,
+        repetition: flashcard!.repetition,
+      },
+      grade
+    );
+
+    flashcard?.$set({
+      ...supermemoItem,
+      dueDate: dayjs().add(supermemoItem.interval, "days").toISOString(),
+    });
+
+    response.status(200).json({ flashcard });
+  } catch (error) {
+    const practiceError = new CustomError(
+      (error as Error).message,
+      0,
+      "Couldn't set the next due date"
+    );
+
+    next(practiceError);
   }
 };

@@ -1,4 +1,5 @@
 import { type Request } from "express";
+import { type SuperMemoGrade } from "supermemo";
 import { type FlashcardModel } from "../database/types";
 
 export interface UserCredentials {
@@ -24,10 +25,10 @@ export interface CustomFile extends Express.Multer.File {
   backupUrl: string;
 }
 
-export type RequestFlashcard = Pick<
-  FlashcardModel,
-  "back" | "front" | "language"
->;
+export interface RequestFlashcard
+  extends Pick<FlashcardModel, "back" | "front" | "language"> {
+  grade: SuperMemoGrade;
+}
 export interface CustomRequest extends Request {
   userId: string;
   file: CustomFile;
