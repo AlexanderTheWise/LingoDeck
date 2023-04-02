@@ -5,6 +5,7 @@ import multer, { diskStorage } from "multer";
 import { parse } from "path";
 import {
   createFlashcard,
+  getFlashcard,
   modifyFlashcard,
   practiceFlashcard,
 } from "../../controllers/flashcards/flashcardsControllers.js";
@@ -70,5 +71,7 @@ flashcardsRouter.patch(
   validate(grade, {}, { abortEarly: false }),
   practiceFlashcard
 );
+
+flashcardsRouter.get("/:flashcardId", auth, getFlashcard);
 
 export default flashcardsRouter;
