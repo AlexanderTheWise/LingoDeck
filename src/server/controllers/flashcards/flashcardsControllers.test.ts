@@ -7,6 +7,7 @@ import mockFlashcards from "../../../mocks/flashcards.mock";
 import {
   createFlashcard,
   getFlashcard,
+  getFlashcards,
   modifyFlashcard,
   practiceFlashcard,
 } from "./flashcardsControllers";
@@ -237,5 +238,44 @@ describe("A getFlashcard controller", () => {
     expect(message).toBe("Couldn't find the requested flashcard");
     expect(statusCode).toBe(404);
     expect(publicMessage).toBe("The requested flashcard doesn't exist");
+  });
+});
+
+describe("A getFlashcards controller", () => {
+  it("Should respond with status 200 and a list of flashcards and the page of the request", async () => {
+    request.query = {
+      language: "English",
+      page: "1",
+      limit: "5",
+    };
+
+    User.findById = jest.fn().mockImplementation(() => ({
+      exec: jest.fn().mockResolvedValue({
+        flashcards: mockFlashcards,
+      }),
+    }));
+
+    await getFlashcards(request, response, next);
+
+    expect(response.status).toHaveBeenLastCalledWith(200);
+    expect(response.json).toHaveBeenCalledWith({
+      flashcards: mockFlashcards,
+      page: 1,
+    });
+  });
+
+  it("Should call next with getFlashcardsError if cannot find the user", async () => {
+    User.findById = jest.fn().mockImplementation(() => ({
+      exec: jest.fn().mockResolvedValue(null),
+    }));
+    const commonMessage = "Couldn't find the specified user";
+
+    await getFlashcards(request, response, next);
+    const { message, statusCode, publicMessage } = next.mock
+      .calls[0][0] as CustomError;
+
+    expect(message).toBe(commonMessage);
+    expect(statusCode).toBe(404);
+    expect(publicMessage).toBe(commonMessage);
   });
 });
