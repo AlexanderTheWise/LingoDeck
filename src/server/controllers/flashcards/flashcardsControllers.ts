@@ -4,7 +4,7 @@ import { type NextFunction, type Response } from "express";
 import CustomError from "../../../CustomError/CustomError.js";
 import Flashcard from "../../../database/models/Flashcards.js";
 import User from "../../../database/models/User.js";
-import { type CustomRequest } from "../../types.js";
+import { type QueryStrings, type CustomRequest } from "../../types.js";
 import { type FlashcardModel } from "../../../database/types.js";
 
 export const createFlashcard = async (
@@ -156,5 +156,48 @@ export const getFlashcard = async (
     );
 
     next(getFlashcardError);
+  }
+};
+
+export const getFlashcards = async (
+  request: CustomRequest,
+  response: Response,
+  next: NextFunction
+) => {
+  try {
+    const { userId } = request;
+    const { limit, page, language } = request.query;
+
+    const pageNumber = +page || 1;
+    const pageSize = +limit || 5;
+
+    const population = await User.findById(
+      userId,
+      { flashcards: 1 },
+      {
+        populate: {
+          path: "flashcards",
+          match: { language },
+          options: { limit: pageSize, skip: (pageNumber - 1) * pageSize },
+        },
+      }
+    ).exec();
+
+    if (!population) {
+      throw new Error("Couldn't find the specified user");
+    }
+
+    response.status(200).json({
+      flashcards: population?.flashcards,
+      page: +page,
+    });
+  } catch (error) {
+    const getFlashcardsError = new CustomError(
+      (error as Error).message,
+      404,
+      "Couldn't find the specified user"
+    );
+
+    next(getFlashcardsError);
   }
 };
