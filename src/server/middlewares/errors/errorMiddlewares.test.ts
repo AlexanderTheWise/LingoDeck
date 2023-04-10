@@ -48,6 +48,7 @@ describe("Given a validationError middleware", () => {
 
       expect(statusCode).toBe(400);
       expect(publicMessage).toBe("Validation has failed");
+      expect(mockValidationError.details.body![0].annotate()).toBe("");
     });
   });
 
