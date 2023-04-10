@@ -286,10 +286,24 @@ describe("Given a GET '/flashcards/:flashcardId' endpoint", () => {
   });
 });
 
+describe("Given a DELETE '/flashcards/:flashcardId' endpoint", () => {
+  describe("When it receives a request with param flashcardId 6434324c6d9613e4f5c334ab", () => {
+    test("Then it should respond with message 'Flashcard has been deleted succesfully'", async () => {
+      const response = await request(app)
+        .delete("/flashcards/6434324c6d9613e4f5c334ab")
+        .set("Authorization", authorizationHeader)
+        .expect(200);
+
+      expect(response.body).toStrictEqual({
+        message: "Flashcard has been deleted succesfully",
+      });
+    });
+  });
+});
+
 describe("Given a GET '/flashcards' endpoint", () => {
   beforeAll(async () => {
     await Flashcard.deleteMany({}).exec();
-
     (flashcards as FlashcardModel[]).forEach(async (flashcard) => {
       const newFlashcard = new Flashcard(flashcard);
       user.flashcards.push(newFlashcard._id);
