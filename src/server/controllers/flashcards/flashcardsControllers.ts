@@ -177,7 +177,7 @@ export const getFlashcards = async (
       {
         populate: {
           path: "flashcards",
-          match: { language },
+          match: language ? { language } : {},
           options: { limit: pageSize, skip: (pageNumber - 1) * pageSize },
         },
       }

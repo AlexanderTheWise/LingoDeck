@@ -6,6 +6,7 @@ import { parse } from "path";
 import {
   createFlashcard,
   getFlashcard,
+  getFlashcards,
   modifyFlashcard,
   practiceFlashcard,
 } from "../../controllers/flashcards/flashcardsControllers.js";
@@ -18,6 +19,7 @@ import {
 import cardFields from "../../schemas/cardFields.js";
 import { type CustomFile } from "../../types.js";
 import grade from "../../schemas/grade.js";
+import queries from "../../schemas/queries.js";
 
 const storage = diskStorage({
   destination: "uploads",
@@ -73,5 +75,11 @@ flashcardsRouter.patch(
 );
 
 flashcardsRouter.get("/:flashcardId", auth, getFlashcard);
+flashcardsRouter.get(
+  "",
+  auth,
+  validate(queries, {}, { abortEarly: false }),
+  getFlashcards
+);
 
 export default flashcardsRouter;

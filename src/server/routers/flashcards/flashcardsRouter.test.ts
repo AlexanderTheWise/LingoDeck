@@ -12,14 +12,20 @@ import {
   unlinkSpy,
 } from "../../../mocks/modulesUtils.mocks";
 import bucket from "../../middlewares/images/supabase";
-import { type FlashcardModel } from "../../../database/types";
+import {
+  type UserDocument,
+  type FlashcardModel,
+} from "../../../database/types";
 import { Types } from "mongoose";
 import User from "../../../database/models/User";
 import Flashcard from "../../../database/models/Flashcards";
+import flashcards from "../../../flashcards.json";
 
 const userId = "6409d298f5c4e943969fc57f";
+let user: UserDocument;
+
 beforeAll(async () => {
-  const user = new User({
+  user = new User({
     username: "AwesomeMagician",
     password: await bcrypt.hash("usuario1", 10),
   });
@@ -198,6 +204,8 @@ const practicedFlashcard = {
   repetition: 1,
 };
 
+const message = "Validation has failed";
+
 describe("Given a PATCH '/flashcards/practice/:flashcardId' endpoint", () => {
   beforeAll(async () => {
     const { id, ...clone } = mockFlashcards[1];
@@ -237,7 +245,7 @@ describe("Given a PATCH '/flashcards/practice/:flashcardId' endpoint", () => {
         .expect(400);
 
       expect(response.body).toStrictEqual({
-        message: "Validation has failed",
+        message,
       });
     });
   });
@@ -263,16 +271,126 @@ describe("Given a GET '/flashcards/:flashcardId' endpoint", () => {
   });
 
   describe("When it receives a request with id '6429d58fa0c9ff3aa7cc95c3'", () => {
-    const get = "/flashcards/6429d58fa0c9ff3aa7cc95c3";
+    const getFlashcard = "/flashcards/6429d58fa0c9ff3aa7cc95c3";
 
     test("Then it should respond with message 'The requested flashcard doesn't exist'", async () => {
       const response = await request(app)
-        .get(get)
+        .get(getFlashcard)
         .set("Authorization", authorizationHeader)
         .expect(404);
 
       expect(response.body).toStrictEqual({
         message: "The requested flashcard doesn't exist",
+      });
+    });
+  });
+});
+
+describe("Given a GET '/flashcards' endpoint", () => {
+  beforeAll(async () => {
+    await Flashcard.deleteMany({}).exec();
+
+    (flashcards as FlashcardModel[]).forEach(async (flashcard) => {
+      const newFlashcard = new Flashcard(flashcard);
+      user.flashcards.push(newFlashcard._id);
+
+      await newFlashcard.save();
+    });
+
+    await user.save();
+  });
+
+  const getFlashcards = "/flashcards";
+
+  describe("When it receives a request without query params", () => {
+    test("Then it should respond with status 200 and the first five flashcards in the list and page null", async () => {
+      const response = await request(app)
+        .get(getFlashcards)
+        .set("Authorization", authorizationHeader)
+        .expect(200);
+
+      flashcards.slice(0, 5).forEach((flashcard) => {
+        expect(response.body).toStrictEqual({
+          flashcards: expect.arrayContaining([
+            expect.objectContaining(flashcard),
+          ]) as FlashcardModel[],
+          page: null,
+        });
+      });
+    });
+  });
+
+  describe("When it receives a request with query params: limit 3, page 2, and language Spanish", () => {
+    test("Then it should respond with status 200 and the next three Spanish flashcards that follow the first three and page 2.", async () => {
+      const response = await request(app)
+        .get(`${getFlashcards}?limit=3&page=2&language=Spanish`)
+        .set("Authorization", authorizationHeader)
+        .expect(200);
+
+      flashcards.slice(3, 6).forEach((flashcard) => {
+        expect(response.body).toStrictEqual({
+          flashcards: expect.arrayContaining([
+            expect.objectContaining(flashcard),
+          ]) as FlashcardModel[],
+          page: 2,
+        });
+      });
+    });
+  });
+
+  describe("When it receives a request with query params: limit 5, page 1, and language French", () => {
+    test("Then it should respond with status 200 and the first five French flashcards and page 1", async () => {
+      const response = await request(app)
+        .get(`${getFlashcards}?limit=5&page=1&language=French`)
+        .set("Authorization", authorizationHeader)
+        .expect(200);
+
+      flashcards.slice(10, 15).forEach((flashcard) => {
+        expect(response.body).toStrictEqual({
+          flashcards: expect.arrayContaining([
+            expect.objectContaining(flashcard),
+          ]) as FlashcardModel[],
+          page: 1,
+        });
+      });
+    });
+  });
+
+  describe("When it receives a request with query param limit 0", () => {
+    test("Then it should respond with status 400 and message 'Validation has failed'", async () => {
+      const response = await request(app)
+        .get(`${getFlashcards}?limit=0`)
+        .set("Authorization", authorizationHeader)
+        .expect(400);
+
+      expect(response.body).toStrictEqual({
+        message,
+      });
+    });
+  });
+
+  describe("When it receives a request with query param page 0", () => {
+    test("Then it should respond with status 400 and message 'Validation has failed'", async () => {
+      const response = await request(app)
+        .get(`${getFlashcards}?page=0`)
+        .set("Authorization", authorizationHeader)
+        .expect(400);
+
+      expect(response.body).toStrictEqual({
+        message,
+      });
+    });
+  });
+
+  describe("When it receives a request with query param language spanish", () => {
+    test("Then it should respond with status 400 and message 'Validation has failed'", async () => {
+      const response = await request(app)
+        .get(`${getFlashcards}?language=spanish`)
+        .set("Authorization", authorizationHeader)
+        .expect(400);
+
+      expect(response.body).toStrictEqual({
+        message,
       });
     });
   });

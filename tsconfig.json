@@ -8,7 +8,8 @@
     "outDir": "./dist/",
     "forceConsistentCasingInFileNames": true /* Ensure that casing is correct in imports. */,
     "noImplicitAny": true /* Enable error reporting for expressions and declarations with an implied `any` type.. */,
-    "strictNullChecks": true /* When type checking, take into account 'null' and 'undefined'. */
+    "strictNullChecks": true /* When type checking, take into account 'null' and 'undefined'. */,
+    "resolveJsonModule": true
   },
   "include": ["*src/**/*.ts"]
 }
