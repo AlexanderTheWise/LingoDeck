@@ -1,4 +1,4 @@
-import { type Types } from "mongoose";
+import { type Types, type Document } from "mongoose";
 import { type SuperMemoItem } from "supermemo";
 export interface UserModel {
   username: string;
@@ -16,3 +16,11 @@ export interface FlashcardModel extends SuperMemoItem {
   language: string;
   dueDate: string;
 }
+
+export type UserDocument = Document<unknown, {}, UserModel> &
+  Omit<
+    UserModel & {
+      _id: Types.ObjectId;
+    },
+    never
+  >;
