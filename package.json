@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "build:dev": "tsc --watch",
+    "build:dev": "rm -rf dist && tsc --watch",
     "start": "node dist/index.js",
     "test": "jest",
     "test:coverage": "jest --coverage --watchAll=false"
