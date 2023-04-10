@@ -26,8 +26,10 @@ export const validationError = (
   next: NextFunction
 ) => {
   if (error instanceof ValidationError) {
-    const validationErrorMessage = error.details
-      .body!.map((error) => error.message)
+    const validated = error.details.body ?? error.details.query;
+
+    const validationErrorMessage = validated!
+      .map((error) => error.message)
       .join(" && ");
 
     const validationError = new CustomError(
@@ -43,7 +45,7 @@ export const validationError = (
 };
 
 export const errorHandler = (
-  { message, publicMessage, statusCode }: CustomError,
+  { message, statusCode, publicMessage }: CustomError,
   request: Request,
   response: Response,
   next: NextFunction
