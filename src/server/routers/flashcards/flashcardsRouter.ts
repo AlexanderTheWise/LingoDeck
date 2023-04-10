@@ -5,6 +5,7 @@ import multer, { diskStorage } from "multer";
 import { parse } from "path";
 import {
   createFlashcard,
+  deleteFlashcard,
   getFlashcard,
   getFlashcards,
   modifyFlashcard,
@@ -81,5 +82,6 @@ flashcardsRouter.get(
   validate(queries, {}, { abortEarly: false }),
   getFlashcards
 );
+flashcardsRouter.delete("/:flashcardId", auth, deleteFlashcard);
 
 export default flashcardsRouter;
