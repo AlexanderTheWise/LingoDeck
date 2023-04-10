@@ -1,4 +1,5 @@
 import { type Response } from "express";
+import { Error } from "mongoose";
 import { mockNext, mockResponse } from "../../../mocks/express.mock";
 import { type CustomRequest } from "../../types";
 import Flashcard from "../../../database/models/Flashcards";
@@ -6,6 +7,7 @@ import User from "../../../database/models/User";
 import mockFlashcards from "../../../mocks/flashcards.mock";
 import {
   createFlashcard,
+  deleteFlashcard,
   getFlashcard,
   getFlashcards,
   modifyFlashcard,
@@ -14,6 +16,7 @@ import {
 import type CustomError from "../../../CustomError/CustomError";
 import { type FlashcardModel } from "../../../database/types";
 import { type SuperMemoGrade } from "supermemo";
+import { isJSDocSeeTag } from "typescript";
 
 const {
   imageInfo: { fileName, imageBackup },
@@ -277,5 +280,39 @@ describe("A getFlashcards controller", () => {
     expect(message).toBe(commonMessage);
     expect(statusCode).toBe(404);
     expect(publicMessage).toBe(commonMessage);
+  });
+});
+
+describe("A deleteFlashcard controller", () => {
+  it("Should respond with status 200 and message 'Flashcard has been deleted succesfully'", async () => {
+    Flashcard.findByIdAndDelete = jest.fn().mockImplementation(() => ({
+      exec: jest.fn().mockResolvedValue(""),
+    }));
+    User.findByIdAndUpdate = jest.fn().mockImplementation(() => ({
+      exec: jest.fn().mockResolvedValue(""),
+    }));
+
+    await deleteFlashcard(request, response, next);
+
+    expect(response.status).toHaveBeenLastCalledWith(200);
+    expect(response.json).toHaveBeenLastCalledWith({
+      message: "Flashcard has been deleted succesfully",
+    });
+  });
+
+  it("Should call next with deleteFlashcard error if it can't update the User document", async () => {
+    User.findByIdAndUpdate = jest.fn().mockImplementation(() => ({
+      exec: jest
+        .fn()
+        .mockRejectedValue(
+          new Error("There was a problem updating the document")
+        ),
+    }));
+
+    await deleteFlashcard(request, response, next);
+    const { message, publicMessage } = next.mock.calls[0][0] as CustomError;
+
+    expect(message).toBe("There was a problem updating the document");
+    expect(publicMessage).toBe("There was a problem deleting the flashcard");
   });
 });
