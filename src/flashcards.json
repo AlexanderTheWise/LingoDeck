@@ -1,0 +1,262 @@
+[
+  {
+    "front": "Hola",
+    "back": "Hello",
+    "imageInfo": {
+      "fileName": "image1.jpg",
+      "imageBackup": "image1_backup.jpg"
+    },
+    "language": "Spanish",
+    "dueDate": "2023-04-02",
+    "efactor": 2.5,
+    "interval": 1,
+    "repetition": 0
+  },
+  {
+    "front": "Adiós",
+    "back": "Goodbye",
+    "imageInfo": {
+      "fileName": "image2.jpg",
+      "imageBackup": "image2_backup.jpg"
+    },
+    "language": "Spanish",
+    "dueDate": "2023-04-03",
+    "efactor": 2.5,
+    "interval": 1,
+    "repetition": 0
+  },
+  {
+    "front": "Gato",
+    "back": "Cat",
+    "imageInfo": {
+      "fileName": "image3.jpg",
+      "imageBackup": "image3_backup.jpg"
+    },
+    "language": "Spanish",
+    "dueDate": "2023-04-04",
+    "efactor": 2.5,
+    "interval": 1,
+    "repetition": 0
+  },
+  {
+    "front": "Perro",
+    "back": "Dog",
+    "imageInfo": {
+      "fileName": "image4.jpg",
+      "imageBackup": "image4_backup.jpg"
+    },
+    "language": "Spanish",
+    "dueDate": "2023-04-05",
+    "efactor": 2.5,
+    "interval": 1,
+    "repetition": 0
+  },
+  {
+    "front": "Comida",
+    "back": "Food",
+    "imageInfo": {
+      "fileName": "image5.jpg",
+      "imageBackup": "image5_backup.jpg"
+    },
+    "language": "Spanish",
+    "dueDate": "2023-04-06",
+    "efactor": 2.5,
+    "interval": 1,
+    "repetition": 0
+  },
+  {
+    "front": "Agua",
+    "back": "Water",
+    "imageInfo": {
+      "fileName": "image6.jpg",
+      "imageBackup": "image6_backup.jpg"
+    },
+    "language": "Spanish",
+    "dueDate": "2023-04-07",
+    "efactor": 2.5,
+    "interval": 1,
+    "repetition": 0
+  },
+  {
+    "front": "Casa",
+    "back": "House",
+    "imageInfo": {
+      "fileName": "image7.jpg",
+      "imageBackup": "image7_backup.jpg"
+    },
+    "language": "Spanish",
+    "dueDate": "2023-04-08",
+    "efactor": 2.5,
+    "interval": 1,
+    "repetition": 0
+  },
+  {
+    "front": "Libro",
+    "back": "Book",
+    "imageInfo": {
+      "fileName": "image8.jpg",
+      "imageBackup": "image8_backup.jpg"
+    },
+    "language": "Spanish",
+    "dueDate": "2023-04-09",
+    "efactor": 2.5,
+    "interval": 1,
+    "repetition": 0
+  },
+  {
+    "front": "Playa",
+    "back": "Beach",
+    "imageInfo": {
+      "fileName": "image9.jpg",
+      "imageBackup": "image9_backup.jpg"
+    },
+    "language": "Spanish",
+    "dueDate": "2023-04-10",
+    "efactor": 2.5,
+    "interval": 1,
+    "repetition": 0
+  },
+  {
+    "front": "Playa",
+    "back": "Beach",
+    "imageInfo": {
+      "fileName": "image9.jpg",
+      "imageBackup": "image9_backup.jpg"
+    },
+    "language": "Spanish",
+    "dueDate": "2023-04-10",
+    "efactor": 2.5,
+    "interval": 1,
+    "repetition": 0
+  },
+  {
+    "front": "Combien ça coûte?",
+    "back": "How much does it cost?",
+    "imageInfo": {
+      "fileName": "image10.jpg",
+      "imageBackup": "image10_backup.jpg"
+    },
+    "language": "French",
+    "dueDate": "2023-04-11",
+    "efactor": 2.5,
+    "interval": 1,
+    "repetition": 0
+  },
+  {
+    "front": "Pardon",
+    "back": "Excuse me",
+    "imageInfo": {
+      "fileName": "image9.jpg",
+      "imageBackup": "image9_backup.jpg"
+    },
+    "language": "French",
+    "dueDate": "2023-04-10",
+    "efactor": 2.5,
+    "interval": 1,
+    "repetition": 0
+  },
+  {
+    "front": "Comment dit-on... en français?",
+    "back": "How do you say... in French?",
+    "imageInfo": {
+      "fileName": "image10.jpg",
+      "imageBackup": "image10_backup.jpg"
+    },
+    "language": "French",
+    "dueDate": "2023-04-11",
+    "efactor": 2.5,
+    "interval": 1,
+    "repetition": 0
+  },
+  {
+    "front": "Je ne comprends pas",
+    "back": "I don't understand",
+    "imageInfo": {
+      "fileName": "image11.jpg",
+      "imageBackup": "image11_backup.jpg"
+    },
+    "language": "French",
+    "dueDate": "2023-04-12",
+    "efactor": 2.5,
+    "interval": 1,
+    "repetition": 0
+  },
+  {
+    "front": "Je suis désolé(e)",
+    "back": "I'm sorry",
+    "imageInfo": {
+      "fileName": "image12.jpg",
+      "imageBackup": "image12_backup.jpg"
+    },
+    "language": "French",
+    "dueDate": "2023-04-13",
+    "efactor": 2.5,
+    "interval": 1,
+    "repetition": 0
+  },
+  {
+    "front": "Où est la gare?",
+    "back": "Where is the train station?",
+    "imageInfo": {
+      "fileName": "image13.jpg",
+      "imageBackup": "image13_backup.jpg"
+    },
+    "language": "French",
+    "dueDate": "2023-04-14",
+    "efactor": 2.5,
+    "interval": 1,
+    "repetition": 0
+  },
+  {
+    "front": "Avez-vous une carte de visite?",
+    "back": "Do you have a business card?",
+    "imageInfo": {
+      "fileName": "image14.jpg",
+      "imageBackup": "image14_backup.jpg"
+    },
+    "language": "French",
+    "dueDate": "2023-04-15",
+    "efactor": 2.5,
+    "interval": 1,
+    "repetition": 0
+  },
+  {
+    "front": "Quel est votre nom?",
+    "back": "What is your name?",
+    "imageInfo": {
+      "fileName": "image15.jpg",
+      "imageBackup": "image15_backup.jpg"
+    },
+    "language": "French",
+    "dueDate": "2023-04-16",
+    "efactor": 2.5,
+    "interval": 1,
+    "repetition": 0
+  },
+  {
+    "front": "Comment allez-vous?",
+    "back": "How are you?",
+    "imageInfo": {
+      "fileName": "image16.jpg",
+      "imageBackup": "image16_backup.jpg"
+    },
+    "language": "French",
+    "dueDate": "2023-04-17",
+    "efactor": 2.5,
+    "interval": 1,
+    "repetition": 0
+  },
+  {
+    "front": "Où sont les toilettes?",
+    "back": "Where are the toilets?",
+    "imageInfo": {
+      "fileName": "image17.jpg",
+      "imageBackup": "image17_backup.jpg"
+    },
+    "language": "French",
+    "dueDate": "2023-04-18",
+    "efactor": 2.5,
+    "interval": 1,
+    "repetition": 0
+  }
+]
