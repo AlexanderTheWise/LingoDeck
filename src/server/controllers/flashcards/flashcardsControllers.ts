@@ -201,3 +201,34 @@ export const getFlashcards = async (
     next(getFlashcardsError);
   }
 };
+
+export const deleteFlashcard = async (
+  request: CustomRequest,
+  response: Response,
+  next: NextFunction
+) => {
+  try {
+    const {
+      params: { flashcardId },
+      userId,
+    } = request;
+    await Flashcard.findByIdAndDelete(flashcardId).exec();
+    await User.findByIdAndUpdate(
+      userId,
+      { $pull: { flashcards: flashcardId } },
+      { new: true }
+    ).exec();
+
+    response
+      .status(200)
+      .json({ message: "Flashcard has been deleted succesfully" });
+  } catch (error) {
+    const deleteFlashcardError = new CustomError(
+      (error as Error).message,
+      0,
+      "There was a problem deleting the flashcard"
+    );
+
+    next(deleteFlashcardError);
+  }
+};
