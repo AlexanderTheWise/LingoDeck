@@ -16,7 +16,6 @@ import {
 import type CustomError from "../../../CustomError/CustomError";
 import { type FlashcardModel } from "../../../database/types";
 import { type SuperMemoGrade } from "supermemo";
-import { isJSDocSeeTag } from "typescript";
 
 const {
   imageInfo: { fileName, imageBackup },

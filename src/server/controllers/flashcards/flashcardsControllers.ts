@@ -73,7 +73,7 @@ export const modifyFlashcard = async (
       efactor: needReset ? 2.5 : flashcard.efactor,
       interval: needReset ? 0 : flashcard.interval,
       repetition: needReset ? 0 : flashcard.repetition,
-      dueDate: needReset ? dayjs() : flashcard.dueDate,
+      dueDate: needReset ? dayjs().toISOString() : flashcard.dueDate,
     } as FlashcardModel);
 
     await flashcard!.save();
@@ -177,7 +177,7 @@ export const getFlashcards = async (
       {
         populate: {
           path: "flashcards",
-          match: language ? { language } : {},
+          match: !language || language === "All" ? {} : { language },
           options: { limit: pageSize, skip: (pageNumber - 1) * pageSize },
         },
       }
