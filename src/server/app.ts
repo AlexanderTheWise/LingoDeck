@@ -10,11 +10,9 @@ import {
 import flashcardsRouter from "./routers/flashcards/flashcardsRouter.js";
 import usersRouter from "./routers/users/usersRouter.js";
 
-const origin = process.env.ORIGIN!;
-
 const app = express();
 const options: cors.CorsOptions = {
-  origin,
+  origin: [process.env.ORIGIN__LOCAL!, process.env.ORIGIN__NETLIFY!],
 };
 
 app.disable("x-powered-by");
