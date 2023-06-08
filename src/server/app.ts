@@ -2,6 +2,7 @@ import "../loadEnvironment.js";
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
+import compression from "compression";
 import {
   endpointNotFound,
   errorHandler,
@@ -19,6 +20,7 @@ app.disable("x-powered-by");
 app.use(morgan("dev"));
 app.use(cors(options));
 app.use(express.json());
+app.use(compression());
 
 app.use("/user", usersRouter);
 app.use("/flashcards", flashcardsRouter);
